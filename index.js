@@ -1,7 +1,8 @@
-var telegram = require('telegram-bot-api')
+var telegram = require('telegram-bot-api');
+
 require('dotenv').config();
 const APIKEY = process.env.APIKEY
-console.log(APIKEY)
+
 const api = new telegram({
   token: APIKEY,
   updates: {
@@ -18,7 +19,7 @@ api.on('message', function (message) {
       chat_id: message.chat.id,
       text: 'HelloWorld'
     });
-  } else if (/hey /i.test(message.text) || /hello /i.test(message.text) || /hi /i.test(message.text)) {
+  } else if (/hey/i.test(message.text) || /hello/i.test(message.text) || /hi/i.test(message.text)) {
     // api.sendDocument({
     //   chat_id: message.chat.id,
     //   document: "assets/giphy.gif"
