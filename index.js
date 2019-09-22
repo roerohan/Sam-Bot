@@ -9,7 +9,7 @@ const customStrings = require(`./strings`)
 // View for specific user
 // Finite State Machine
 
-api.on(`message`, async function (message) {
+api.on(`message`, async (message) => {
 
   console.log(message);
 
@@ -105,9 +105,14 @@ api.on(`message`, async function (message) {
 
     } else {
 
-      api.sendMessage({
+      await api.sendMessage({
         chat_id: message.chat.id,
-        text: customStrings.understandFailure
+        text: customStrings.understandFailure,
+        reply_markup: JSON.stringify({
+          keyboard: [[`View Users`, `View Transactions`], [`Add User`, `Add Transaction`]],
+          one_time_keyboard: true,
+          resize_keyboard: true
+        })
       });
 
     }

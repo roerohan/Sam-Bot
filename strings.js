@@ -6,5 +6,5 @@ module.exports = {
     userAdded: `User added successfully.`,
     nameExists: `This name already exists, try a different one.`,
     transactionAdded: `Your transaction has been added`,
-    understandFailure: `I don't understand, try using a command.`
+    understandFailure: `I don't understand, try using a command.`,
 }

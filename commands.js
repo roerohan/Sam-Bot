@@ -101,7 +101,7 @@ viewTransactions = async (user) => {
         const doc = await User.findOne({
             username: user.username
         });
-        console.log(doc)
+
         var reply = (doc.transactions.length !== 0) ? `Your transactions are as follows: ${doc.transactions}`: `You have not made any transactions yet.`;
 
     } catch (e) {
