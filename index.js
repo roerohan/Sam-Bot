@@ -13,109 +13,126 @@ api.on(`message`, async (message) => {
 
   console.log(message);
 
-  var user = getUser(message);
+  try {
 
-  if (message.from.is_bot) {
-    return;
-  }
+    var user = getUser(message);
 
-  if (message.reply_to_message && message.reply_to_message.from.is_bot) {
-
-    if (message.reply_to_message.text === customStrings.askName) {
-
-      if (await addUser(user, message)) {
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.userAdded
-        });
-      } else {
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.nameExists
-        });
-      }
-    } else if (message.reply_to_message.text === customStrings.askNameTransaction) {
-
-      // input
-
-      api.sendMessage({
-        chat_id: message.chat.id,
-        text: customStrings.askDescription,
-        reply_markup: JSON.stringify({
-          force_reply: true
-        })
-      });
-
+    if (message.from.is_bot) {
+      return;
     }
-
-  } else {
 
     if (message.text === `/start`) {
 
-      commands.checkUserRegistered(user);
+      if (await commands.checkUserRegistered(user)) {
 
-    } else if (/hey/i.test(message.text) || /hello/i.test(message.text) || /hi/i.test(message.text) || /sup/i.test(message.text)) {
-
-      api.sendMessage({
-        chat_id: message.chat.id,
-        text: customStrings.sayHello,
-      });
-
-    } else if (/add user/i.test(message.text)) {
-
-      api.sendMessage({
-        chat_id: message.chat.id,
-        text: customStrings.askName,
-        reply_markup: JSON.stringify({
-          force_reply: true
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.welcomeBack,
+          reply_markup: JSON.stringify({
+            keyboard: customStrings.commandList,
+            one_time_keyboard: true,
+            resize_keyboard: true
+          })
         })
-      });
 
-    } else if (/add transaction/i.test(message.text)) {
+      }
 
-      api.sendMessage({
-        chat_id: message.chat.id,
-        text: customStrings.askNameTransaction,
-        reply_markup: JSON.stringify({
-          force_reply: true
-        })
-      });
+    } else if (message.reply_to_message && message.reply_to_message.from.is_bot) {
 
-    } else if (/view users/i.test(message.text)) {
+      if (message.reply_to_message.text === customStrings.askName) {
 
-      let reply = await commands.viewUsers(user);
+        if (await addUser(user, message)) {
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: customStrings.userAdded
+          });
+        } else {
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: customStrings.nameExists
+          });
+        }
+      } else if (message.reply_to_message.text === customStrings.askNameTransaction) {
 
-      api.sendMessage({
-        chat_id: message.chat.id,
-        text: reply,
-      });
+        // input
 
-    } else if (/view transactions/i.test(message.text)) {
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.askDescription,
+          reply_markup: JSON.stringify({
+            force_reply: true
+          })
+        });
 
-      let reply = await commands.viewTransactions(user);
-
-      api.sendMessage({
-        chat_id: message.chat.id,
-        text: reply,
-      });
-
-    } else if (/add budget/i.test(message.text)) {
-
-      // Coming soon
+      }
 
     } else {
 
-      await api.sendMessage({
-        chat_id: message.chat.id,
-        text: customStrings.understandFailure,
-        reply_markup: JSON.stringify({
-          keyboard: [[`View Users`, `View Transactions`], [`Add User`, `Add Transaction`]],
-          one_time_keyboard: true,
-          resize_keyboard: true
-        })
-      });
+      if (/hey/i.test(message.text) || /hello/i.test(message.text) || /hi/i.test(message.text) || /sup/i.test(message.text)) {
 
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.sayHello,
+        });
+
+      } else if (/add user/i.test(message.text)) {
+
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.askName,
+          reply_markup: JSON.stringify({
+            force_reply: true
+          })
+        });
+
+      } else if (/add transaction/i.test(message.text)) {
+
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.askNameTransaction,
+          reply_markup: JSON.stringify({
+            force_reply: true
+          })
+        });
+
+      } else if (/view users/i.test(message.text)) {
+
+        let reply = await commands.viewUsers(user);
+
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: reply,
+        });
+
+      } else if (/view transactions/i.test(message.text)) {
+
+        let reply = await commands.viewTransactions(user);
+
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: reply,
+        });
+
+      } else if (/add budget/i.test(message.text)) {
+
+        // Coming soon
+
+      } else {
+
+        await api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.understandFailure,
+          reply_markup: JSON.stringify({
+            keyboard: customStrings.commandList,
+            one_time_keyboard: true,
+            resize_keyboard: true
+          })
+        });
+
+      }
     }
+  } catch (e) {
+    console.log(`Error: ${e}`)
   }
 
 });

@@ -22,7 +22,10 @@ checkUserRegistered = async (user) => {
             user_obj.transactions = [];
 
             user_obj.save();
+            return false;
         }
+
+        return true;
 
     } catch (e) {
         console.log(`Error: ${e}`)
@@ -85,6 +88,10 @@ viewUsers = async (user) => {
             username: user.username
         });
 
+        if (!doc) {
+            return;
+        }
+
         var reply = (doc.others.length !== 0) ? `These are the users you have added: ${doc.others}` : `You have not added any users yet.`;
 
     } catch (e) {
@@ -101,6 +108,10 @@ viewTransactions = async (user) => {
         const doc = await User.findOne({
             username: user.username
         });
+
+        if (!doc) {
+            return;
+        }
 
         var reply = (doc.transactions.length !== 0) ? `Your transactions are as follows: ${doc.transactions}`: `You have not made any transactions yet.`;
 
