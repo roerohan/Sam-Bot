@@ -1,5 +1,5 @@
-const api = require('./api.js');
-const commands = require('./commands.js');
+const api = require(`./api.js`);
+const commands = require(`./commands.js`);
 const customStrings = require(`./strings`)
 
 // Add user
@@ -9,7 +9,7 @@ const customStrings = require(`./strings`)
 // View for specific user
 // Finite State Machine
 
-api.on('message', async function (message) {
+api.on(`message`, async function (message) {
 
   console.log(message);
 
