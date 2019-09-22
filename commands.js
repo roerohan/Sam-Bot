@@ -89,7 +89,8 @@ viewUsers = async (user) => {
         });
 
         if (!doc) {
-            return;
+            reply = `You must register yourself with the bot first, try: '/start'`
+            return reply;
         }
 
         var reply = (doc.others.length !== 0) ? `These are the users you have added: ${doc.others}` : `You have not added any users yet.`;
@@ -110,7 +111,8 @@ viewTransactions = async (user) => {
         });
 
         if (!doc) {
-            return;
+            reply = `You must register yourself with the bot first, try: '/start'`
+            return reply;
         }
 
         var reply = (doc.transactions.length !== 0) ? `Your transactions are as follows: ${doc.transactions}`: `You have not made any transactions yet.`;
