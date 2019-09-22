@@ -1,4 +1,5 @@
 module.exports = {
+    sayHello: `Hey there! How may I help you?`,
     askName: `What's the name of the person?`,
     askNameTransaction: `Who did you make the transaction with?`,
     askDescription: `What was the transaction for?`,

@@ -58,7 +58,7 @@ api.on('message', async function (message) {
 
       api.sendMessage({
         chat_id: message.chat.id,
-        text: 'Hi there!'
+        text: customStrings.sayHello,
       });
 
     } else if (/add user/i.test(message.text)) {
