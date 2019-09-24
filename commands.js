@@ -35,8 +35,8 @@ checkUserRegistered = async (user) => {
 
 addUser = async (user, message) => {
 
+    let info = true;
     try {
-        let info = true;
         const name = message.text.toString();
 
         const doc = await User.findOne({
