@@ -1,6 +1,6 @@
 const api = require(`./api.js`);
 const commands = require(`./commands.js`);
-const customStrings = require(`./strings`)
+const customStrings = require(`./strings`);
 
 // Add user
 // Add transaction
@@ -10,7 +10,7 @@ const customStrings = require(`./strings`)
 // Finite State Machine
 
 function isGreeting(text){
-  return (/hey/i.test(text) || /hello/i.test(text) || /hi/i.test(text) || /sup/i.test(text))
+  return (/hey/i.test(text) || /hello/i.test(text) || /hi/i.test(text) || /sup/i.test(text));
 }
 
 function isAddUser(text){
@@ -22,7 +22,7 @@ function isAddTransaction(text){
 }
 
 function isViewUsers(text){
-  return (/view users/i.test(text))
+  return (/view users/i.test(text));
 }
 
 function isViewTransactions(text){
@@ -30,7 +30,11 @@ function isViewTransactions(text){
 }
 
 function isAddBudget(text){
-  return (/add budget/i.test(text))
+  return (/add budget/i.test(text));
+}
+
+function isRemoveUser(text){
+  return (/remove user/i.test(message.text));
 }
 
 api.on(`message`, async (message) => {
@@ -63,6 +67,16 @@ api.on(`message`, async (message) => {
 
     } else if (message.reply_to_message && message.reply_to_message.from.is_bot) {
 
+      if (/cancel/i.test(message.text)) {
+
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.actionAborted,
+        });
+        return;
+        
+      }
+
       if (message.reply_to_message.text === customStrings.askName) {
 
         if (await addUser(user, message)) {
@@ -88,9 +102,19 @@ api.on(`message`, async (message) => {
           })
         });
 
+      } else if (message.reply_to_message.text === customStrings.askDescription) {
+
+        // input
+
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.transactionAdded,
+        });
+
       }
     } else {
-      switch(true){
+      switch (true) {
+          
         case isGreeting(message.text):
           api.sendMessage({
             chat_id: message.chat.id,
@@ -107,7 +131,7 @@ api.on(`message`, async (message) => {
             })
           });
           break;
-
+          
         case isAddTransaction(message.text):
           api.sendMessage({
             chat_id: message.chat.id,
@@ -137,7 +161,11 @@ api.on(`message`, async (message) => {
           break;
 
         case isAddBudget(message.text):
-          // Coming soon
+          // TODO: AddBudget
+          break;
+          
+        case isRemoveUser(message.text):
+          // TODO: RemoveUser
           break;
 
         default:
@@ -149,12 +177,11 @@ api.on(`message`, async (message) => {
                 one_time_keyboard: true,
                 resize_keyboard: true
               })
-            });
-            
+            }); 
       }
     }
   } catch (e) {
-    console.log(`Error: ${e}`)
+    console.log(`Error: ${e}`);
   }
 
 });
@@ -166,7 +193,6 @@ getUser = (message) => {
   user.username = message.from.username;
   user.name = `${message.from.first_name} ${message.from.last_name}`
   user.chat_id = message.from.id;
-  message.reply_to_message
 
   return user;
 }

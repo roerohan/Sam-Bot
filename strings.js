@@ -8,6 +8,7 @@ module.exports = {
     nameExists: `This name already exists, try a different one.`,
     transactionAdded: `Your transaction has been added`,
     understandFailure: `I don't understand, try using a command.`,
+    actionAborted: `Your action has been aborted`,
     commandList: [
         [`View Users`, `View Transactions`],
         [`Add User`, `Add Transaction`]
