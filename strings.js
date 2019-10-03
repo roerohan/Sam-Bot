@@ -3,6 +3,7 @@ module.exports = {
     welcomeBack: `Welcome back!`,
     askName: `What's the name of the person?`,
     askNameTransaction: `Who did you make the transaction with?`,
+    askAmount: `What was the amount spent? (Enter a -ve value if you spent money)`,
     askDescription: `What was the transaction for?`,
     userAdded: `User added successfully.`,
     nameExists: `This name already exists, try a different one.`,
