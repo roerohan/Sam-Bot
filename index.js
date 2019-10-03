@@ -9,6 +9,30 @@ const customStrings = require(`./strings`)
 // View for specific user
 // Finite State Machine
 
+function isGreeting(text){
+  return (/hey/i.test(text) || /hello/i.test(text) || /hi/i.test(text) || /sup/i.test(text))
+}
+
+function isAddUser(text){
+  return (/add user/i.test(text));
+}
+
+function isAddTransaction(text){
+  return (/add transaction/i.test(text));
+}
+
+function isViewUsers(text){
+  return (/view users/i.test(text))
+}
+
+function isViewTransactions(text){
+  return (/view transactions/i.test(text));
+}
+
+function isAddBudget(text){
+  return (/add budget/i.test(text))
+}
+
 api.on(`message`, async (message) => {
 
   console.log(message);
@@ -65,70 +89,68 @@ api.on(`message`, async (message) => {
         });
 
       }
-
     } else {
+      switch(true){
+        case isGreeting(message.text):
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: customStrings.sayHello,
+          });
+          break;
 
-      if (/hey/i.test(message.text) || /hello/i.test(message.text) || /hi/i.test(message.text) || /sup/i.test(message.text)) {
+        case isAddUser(message.text):
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: customStrings.askName,
+            reply_markup: JSON.stringify({
+              force_reply: true
+            })
+          });
+          break;
 
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.sayHello,
-        });
+        case isAddTransaction(message.text):
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: customStrings.askNameTransaction,
+            reply_markup: JSON.stringify({
+              force_reply: true
+            })
+          });
+          break;
 
-      } else if (/add user/i.test(message.text)) {
+        case isViewUsers(message.text):
+          let reply = await commands.viewUsers(user);
 
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.askName,
-          reply_markup: JSON.stringify({
-            force_reply: true
-          })
-        });
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: reply,
+          });
+          break;
 
-      } else if (/add transaction/i.test(message.text)) {
+        case isViewTransactions(message.text):
+          let reply = await commands.viewTransactions(user);
 
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.askNameTransaction,
-          reply_markup: JSON.stringify({
-            force_reply: true
-          })
-        });
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: reply,
+          });
+          break;
 
-      } else if (/view users/i.test(message.text)) {
+        case isAddBudget(message.text):
+          // Coming soon
+          break;
 
-        let reply = await commands.viewUsers(user);
-
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: reply,
-        });
-
-      } else if (/view transactions/i.test(message.text)) {
-
-        let reply = await commands.viewTransactions(user);
-
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: reply,
-        });
-
-      } else if (/add budget/i.test(message.text)) {
-
-        // Coming soon
-
-      } else {
-
-        await api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.understandFailure,
-          reply_markup: JSON.stringify({
-            keyboard: customStrings.commandList,
-            one_time_keyboard: true,
-            resize_keyboard: true
-          })
-        });
-
+        default:
+            await api.sendMessage({
+              chat_id: message.chat.id,
+              text: customStrings.understandFailure,
+              reply_markup: JSON.stringify({
+                keyboard: customStrings.commandList,
+                one_time_keyboard: true,
+                resize_keyboard: true
+              })
+            });
+            
       }
     }
   } catch (e) {
@@ -136,6 +158,8 @@ api.on(`message`, async (message) => {
   }
 
 });
+
+
 
 getUser = (message) => {
   var user = {};
