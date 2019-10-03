@@ -39,6 +39,16 @@ api.on(`message`, async (message) => {
 
     } else if (message.reply_to_message && message.reply_to_message.from.is_bot) {
 
+      if (/cancel/i.test(message.text)) {
+
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.actionAborted,
+        });
+        return;
+        
+      }
+
       if (message.reply_to_message.text === customStrings.askName) {
 
         if (await addUser(user, message)) {
@@ -62,6 +72,15 @@ api.on(`message`, async (message) => {
           reply_markup: JSON.stringify({
             force_reply: true
           })
+        });
+
+      } else if (message.reply_to_message.text === customStrings.askDescription) {
+
+        // input
+
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.transactionAdded,
         });
 
       }
@@ -113,11 +132,18 @@ api.on(`message`, async (message) => {
           text: reply,
         });
 
-      } else if (/add budget/i.test(message.text)) {
+      }
 
-        // Coming soon
+      // else if (/remove user/i.test(message.text)) {
 
-      } else {
+      // TODO: remove user
+
+      // } else if (/add budget/i.test(message.text)) {
+
+      // TODO: add budget functionality
+
+      // }
+      else {
 
         await api.sendMessage({
           chat_id: message.chat.id,
