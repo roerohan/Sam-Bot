@@ -180,7 +180,6 @@ getUser = (message) => {
   user.username = message.from.username;
   user.name = `${message.from.first_name} ${message.from.last_name}`
   user.chat_id = message.from.id;
-  message.reply_to_message
 
   return user;
 }
