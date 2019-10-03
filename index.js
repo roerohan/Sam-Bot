@@ -46,7 +46,7 @@ api.on(`message`, async (message) => {
           text: customStrings.actionAborted,
         });
         return;
-        
+
       }
 
       if (message.reply_to_message.text === customStrings.askName) {
@@ -63,6 +63,18 @@ api.on(`message`, async (message) => {
           });
         }
       } else if (message.reply_to_message.text === customStrings.askNameTransaction) {
+
+        // input
+
+        api.sendMessage({
+          chat_id: message.chat.id,
+          text: customStrings.askAmount,
+          reply_markup: JSON.stringify({
+            force_reply: true
+          })
+        });
+
+      } else if (message.reply_to_message.text === customStrings.askAmount) {
 
         // input
 
