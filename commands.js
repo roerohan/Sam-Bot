@@ -2,6 +2,7 @@ require('./models/db');
 
 const User = require('./models/user.model');
 const TransactionSchema = require('./models/transaction.schema');
+const strings = require('./strings');
 
 checkUserRegistered = async (user) => {
 
@@ -86,7 +87,7 @@ addTransactions = async (user, message) => {
         });
 
         if (!doc) {
-            reply = `You must register yourself with the bot first, try: '/start'`
+            reply = strings.notRegistered;
             return reply;
         }
 

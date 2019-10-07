@@ -1,5 +1,6 @@
 module.exports = {
     sayHello: `Hey there! How may I help you?`,
+    notRegistered: `You must register yourself with the bot first, try: '/start'`,
     welcomeBack: `Welcome back!`,
     askName: `What's the name of the person?`,
     askNameTransaction: `Who did you make the transaction with?`,
