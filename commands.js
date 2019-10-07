@@ -2,6 +2,7 @@ require('./models/db');
 
 const User = require('./models/user.model');
 const TransactionSchema = require('./models/transaction.schema');
+const strings = require('./strings');
 
 checkUserRegistered = async (user) => {
 
@@ -66,19 +67,43 @@ addUser = async (user, message) => {
     return info;
 }
 
+/**
+ * Adds a transaction to an existing user
+ * Params: userSchema user, object message
+ * Returns model of transaction info that was updated to the user
+*/
 addTransactions = async (user, message) => {
 
-    try {
+    let transactionInfo = new TransactionSchema();
+    transactionInfo.name = message.text.name;
+    transactionInfo.amount = message.text.amount;
+    transactionInfo.other = message.text.other;
+    transactionInfo.date = message.text.date;
+    transactionInfo.details = message.text.details;
 
-        var doc = await User.find({
+    try {
+        const doc = await User.find({
             username: user.username
+        });
+
+        if (!doc) {
+            reply = strings.notRegistered;
+            return reply;
+        }
+
+        await User.findOneAndUpdate({
+            username: user.username
+        }, {
+            "$push": {
+                transactions: transactionInfo
+            }
         });
 
     }
     catch (e) {
         console.log(`Error: ${e}`)
     }
-
+    return transactionInfo;
 }
 
 viewUsers = async (user) => {
