@@ -9,31 +9,31 @@ const customStrings = require(`./strings`);
 // View for specific user
 // Finite State Machine
 
-function isGreeting(text){
+function isGreeting(text) {
   return (/hey/i.test(text) || /hello/i.test(text) || /hi/i.test(text) || /sup/i.test(text));
 }
 
-function isAddUser(text){
+function isAddUser(text) {
   return (/add user/i.test(text));
 }
 
-function isAddTransaction(text){
+function isAddTransaction(text) {
   return (/add transaction/i.test(text));
 }
 
-function isViewUsers(text){
+function isViewUsers(text) {
   return (/view users/i.test(text));
 }
 
-function isViewTransactions(text){
+function isViewTransactions(text) {
   return (/view transactions/i.test(text));
 }
 
-function isAddBudget(text){
+function isAddBudget(text) {
   return (/add budget/i.test(text));
 }
 
-function isRemoveUser(text){
+function isRemoveUser(text) {
   return (/remove user/i.test(message.text));
 }
 
@@ -125,8 +125,10 @@ api.on(`message`, async (message) => {
 
       }
     } else {
+
+      let reply = ``;
+
       switch (true) {
-          
         case isGreeting(message.text):
           api.sendMessage({
             chat_id: message.chat.id,
@@ -143,7 +145,7 @@ api.on(`message`, async (message) => {
             })
           });
           break;
-          
+
         case isAddTransaction(message.text):
           api.sendMessage({
             chat_id: message.chat.id,
@@ -155,7 +157,7 @@ api.on(`message`, async (message) => {
           break;
 
         case isViewUsers(message.text):
-          let reply = await commands.viewUsers(user);
+          reply = await commands.viewUsers(user);
 
           api.sendMessage({
             chat_id: message.chat.id,
@@ -164,7 +166,7 @@ api.on(`message`, async (message) => {
           break;
 
         case isViewTransactions(message.text):
-          let reply = await commands.viewTransactions(user);
+          reply = await commands.viewTransactions(user);
 
           api.sendMessage({
             chat_id: message.chat.id,
@@ -175,21 +177,22 @@ api.on(`message`, async (message) => {
         case isAddBudget(message.text):
           // TODO: AddBudget
           break;
-          
+
         case isRemoveUser(message.text):
           // TODO: RemoveUser
           break;
 
         default:
-            await api.sendMessage({
-              chat_id: message.chat.id,
-              text: customStrings.understandFailure,
-              reply_markup: JSON.stringify({
-                keyboard: customStrings.commandList,
-                one_time_keyboard: true,
-                resize_keyboard: true
-              })
-            }); 
+          await api.sendMessage({
+            chat_id: message.chat.id,
+            text: customStrings.understandFailure,
+            reply_markup: JSON.stringify({
+              keyboard: customStrings.commandList,
+              one_time_keyboard: true,
+              resize_keyboard: true
+            })
+          });
+          break;
       }
     }
   } catch (e) {
