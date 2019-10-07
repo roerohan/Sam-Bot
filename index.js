@@ -34,7 +34,7 @@ function isAddBudget(text) {
 }
 
 function isRemoveUser(text) {
-  return (/remove user/i.test(message.text));
+  return (/remove user/i.test(text));
 }
 
 api.on(`message`, async (message) => {
