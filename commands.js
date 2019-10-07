@@ -74,11 +74,11 @@ addUser = async (user, message) => {
 addTransactions = async (user, message) => {
 
     let transactionInfo = new TransactionSchema();
-    transactionInfo.name = message.name;
-    transactionInfo.amount = message.amount;
-    transactionInfo.other = message.other;
-    transactionInfo.date = message.date;
-    transactionInfo.details = message.details;
+    transactionInfo.name = message.text.name;
+    transactionInfo.amount = message.text.amount;
+    transactionInfo.other = message.text.other;
+    transactionInfo.date = message.text.date;
+    transactionInfo.details = message.text.details;
 
     try {
         const doc = await User.find({
