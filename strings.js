@@ -11,6 +11,7 @@ module.exports = {
     transactionAdded: `Your transaction has been added`,
     understandFailure: `I don't understand, try using a command.`,
     actionAborted: `Your action has been aborted`,
+    failureMessage: `Your task could not be completed, try again.`,
     commandList: [
         [`View Users`, `View Transactions`],
         [`Add User`, `Add Transaction`]

@@ -102,6 +102,8 @@ addTransactions = async (user, message) => {
     }
     catch (e) {
         console.log(`Error: ${e}`)
+        reply = strings.failureMessage;
+        return reply;
     }
     return transactionInfo;
 }

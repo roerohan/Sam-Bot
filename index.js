@@ -1,6 +1,6 @@
 const api = require(`./api.js`);
 const commands = require(`./commands.js`);
-const customStrings = require(`./strings`);
+const strings = require(`./strings`);
 
 // Add user
 // Add transaction
@@ -55,9 +55,9 @@ api.on(`message`, async (message) => {
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.welcomeBack,
+          text: strings.welcomeBack,
           reply_markup: JSON.stringify({
-            keyboard: customStrings.commandList,
+            keyboard: strings.commandList,
             one_time_keyboard: true,
             resize_keyboard: true
           })
@@ -71,56 +71,56 @@ api.on(`message`, async (message) => {
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.actionAborted,
+          text: strings.actionAborted,
         });
         return;
 
       }
 
-      if (message.reply_to_message.text === customStrings.askName) {
+      if (message.reply_to_message.text === strings.askName) {
 
         if (await addUser(user, message)) {
           api.sendMessage({
             chat_id: message.chat.id,
-            text: customStrings.userAdded
+            text: strings.userAdded
           });
         } else {
           api.sendMessage({
             chat_id: message.chat.id,
-            text: customStrings.nameExists
+            text: strings.nameExists
           });
         }
-      } else if (message.reply_to_message.text === customStrings.askNameTransaction) {
+      } else if (message.reply_to_message.text === strings.askNameTransaction) {
 
         // input
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.askAmount,
+          text: strings.askAmount,
           reply_markup: JSON.stringify({
             force_reply: true
           })
         });
 
-      } else if (message.reply_to_message.text === customStrings.askAmount) {
+      } else if (message.reply_to_message.text === strings.askAmount) {
 
         // input
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.askDescription,
+          text: strings.askDescription,
           reply_markup: JSON.stringify({
             force_reply: true
           })
         });
 
-      } else if (message.reply_to_message.text === customStrings.askDescription) {
+      } else if (message.reply_to_message.text === strings.askDescription) {
 
         // input
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.transactionAdded,
+          text: strings.transactionAdded,
         });
 
       }
@@ -132,14 +132,14 @@ api.on(`message`, async (message) => {
         case isGreeting(message.text):
           api.sendMessage({
             chat_id: message.chat.id,
-            text: customStrings.sayHello,
+            text: strings.sayHello,
           });
           break;
 
         case isAddUser(message.text):
           api.sendMessage({
             chat_id: message.chat.id,
-            text: customStrings.askName,
+            text: strings.askName,
             reply_markup: JSON.stringify({
               force_reply: true
             })
@@ -149,7 +149,7 @@ api.on(`message`, async (message) => {
         case isAddTransaction(message.text):
           api.sendMessage({
             chat_id: message.chat.id,
-            text: customStrings.askNameTransaction,
+            text: strings.askNameTransaction,
             reply_markup: JSON.stringify({
               force_reply: true
             })
@@ -185,9 +185,9 @@ api.on(`message`, async (message) => {
         default:
           await api.sendMessage({
             chat_id: message.chat.id,
-            text: customStrings.understandFailure,
+            text: strings.understandFailure,
             reply_markup: JSON.stringify({
-              keyboard: customStrings.commandList,
+              keyboard: strings.commandList,
               one_time_keyboard: true,
               resize_keyboard: true
             })
