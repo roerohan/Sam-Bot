@@ -1,6 +1,6 @@
-const api = require(`./api.js`);
-const commands = require(`./commands.js`);
-const customStrings = require(`./strings`)
+const api = require(`./api`);
+const commands = require(`./commands`);
+const strings = require(`./strings`);
 
 // Add user
 // Add transaction
@@ -8,6 +8,34 @@ const customStrings = require(`./strings`)
 // View transactions
 // View for specific user
 // Finite State Machine
+
+function isGreeting(text) {
+  return (/hey/i.test(text) || /hello/i.test(text) || /hi/i.test(text) || /sup/i.test(text));
+}
+
+function isAddUser(text) {
+  return (/add user/i.test(text));
+}
+
+function isAddTransaction(text) {
+  return (/add transaction/i.test(text));
+}
+
+function isViewUsers(text) {
+  return (/view users/i.test(text));
+}
+
+function isViewTransactions(text) {
+  return (/view transactions/i.test(text));
+}
+
+function isAddBudget(text) {
+  return (/add budget/i.test(text));
+}
+
+function isRemoveUser(text) {
+  return (/remove user/i.test(text));
+}
 
 api.on(`message`, async (message) => {
 
@@ -27,9 +55,9 @@ api.on(`message`, async (message) => {
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.welcomeBack,
+          text: strings.welcomeBack,
           reply_markup: JSON.stringify({
-            keyboard: customStrings.commandList,
+            keyboard: strings.commandList,
             one_time_keyboard: true,
             resize_keyboard: true
           })
@@ -43,137 +71,137 @@ api.on(`message`, async (message) => {
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.actionAborted,
+          text: strings.actionAborted,
         });
         return;
 
       }
 
-      if (message.reply_to_message.text === customStrings.askName) {
+      if (message.reply_to_message.text === strings.askName) {
 
-        if (await addUser(user, message)) {
+        if (await commands.addUser(user, message)) {
           api.sendMessage({
             chat_id: message.chat.id,
-            text: customStrings.userAdded
+            text: strings.userAdded
           });
         } else {
           api.sendMessage({
             chat_id: message.chat.id,
-            text: customStrings.nameExists
+            text: strings.nameExists
           });
         }
-      } else if (message.reply_to_message.text === customStrings.askNameTransaction) {
+      } else if (message.reply_to_message.text === strings.askNameTransaction) {
 
         // input
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.askAmount,
+          text: strings.askAmount,
           reply_markup: JSON.stringify({
             force_reply: true
           })
         });
 
-      } else if (message.reply_to_message.text === customStrings.askAmount) {
+      } else if (message.reply_to_message.text === strings.askAmount) {
 
         // input
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.askDescription,
+          text: strings.askDescription,
           reply_markup: JSON.stringify({
             force_reply: true
           })
         });
 
-      } else if (message.reply_to_message.text === customStrings.askDescription) {
+      } else if (message.reply_to_message.text === strings.askDescription) {
 
         // input
 
         api.sendMessage({
           chat_id: message.chat.id,
-          text: customStrings.transactionAdded,
+          text: strings.transactionAdded,
         });
 
       }
-
     } else {
 
-      if (/hey/i.test(message.text) || /hello/i.test(message.text) || /hi/i.test(message.text) || /sup/i.test(message.text)) {
+      let reply = ``;
 
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.sayHello,
-        });
+      switch (true) {
+        case isGreeting(message.text):
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: strings.sayHello,
+          });
+          break;
 
-      } else if (/add user/i.test(message.text)) {
+        case isAddUser(message.text):
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: strings.askName,
+            reply_markup: JSON.stringify({
+              force_reply: true
+            })
+          });
+          break;
 
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.askName,
-          reply_markup: JSON.stringify({
-            force_reply: true
-          })
-        });
+        case isAddTransaction(message.text):
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: strings.askNameTransaction,
+            reply_markup: JSON.stringify({
+              force_reply: true
+            })
+          });
+          break;
 
-      } else if (/add transaction/i.test(message.text)) {
+        case isViewUsers(message.text):
+          reply = await commands.viewUsers(user);
 
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.askNameTransaction,
-          reply_markup: JSON.stringify({
-            force_reply: true
-          })
-        });
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: reply,
+          });
+          break;
 
-      } else if (/view users/i.test(message.text)) {
+        case isViewTransactions(message.text):
+          reply = await commands.viewTransactions(user);
 
-        let reply = await commands.viewUsers(user);
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: reply,
+          });
+          break;
 
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: reply,
-        });
+        case isAddBudget(message.text):
+          // TODO: AddBudget
+          break;
 
-      } else if (/view transactions/i.test(message.text)) {
+        case isRemoveUser(message.text):
+          // TODO: RemoveUser
+          break;
 
-        let reply = await commands.viewTransactions(user);
-
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: reply,
-        });
-
-      }
-
-      // else if (/remove user/i.test(message.text)) {
-
-      // TODO: remove user
-
-      // } else if (/add budget/i.test(message.text)) {
-
-      // TODO: add budget functionality
-
-      // }
-      else {
-
-        await api.sendMessage({
-          chat_id: message.chat.id,
-          text: customStrings.understandFailure,
-          reply_markup: JSON.stringify({
-            keyboard: customStrings.commandList,
-            one_time_keyboard: true,
-            resize_keyboard: true
-          })
-        });
-
+        default:
+          await api.sendMessage({
+            chat_id: message.chat.id,
+            text: strings.understandFailure,
+            reply_markup: JSON.stringify({
+              keyboard: strings.commandList,
+              one_time_keyboard: true,
+              resize_keyboard: true
+            })
+          });
+          break;
       }
     }
   } catch (e) {
-    console.log(`Error: ${e}`)
+    console.log(`Error: ${e}`);
   }
 
 });
+
+
 
 getUser = (message) => {
   var user = {};
