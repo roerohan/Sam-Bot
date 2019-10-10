@@ -1,5 +1,5 @@
-const api = require(`./api.js`);
-const commands = require(`./commands.js`);
+const api = require(`./api`);
+const commands = require(`./commands`);
 const strings = require(`./strings`);
 
 // Add user
@@ -79,7 +79,7 @@ api.on(`message`, async (message) => {
 
       if (message.reply_to_message.text === strings.askName) {
 
-        if (await addUser(user, message)) {
+        if (await commands.addUser(user, message)) {
           api.sendMessage({
             chat_id: message.chat.id,
             text: strings.userAdded
