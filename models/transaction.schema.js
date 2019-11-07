@@ -3,11 +3,6 @@
 const mongoose = require('mongoose');
 
 var transactionSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        index: true,
-    },
     amount: {
         type: Number,
         required: true,
@@ -26,4 +21,7 @@ var transactionSchema = new mongoose.Schema({
     }
 });
 
-module.exports = transactionSchema;
+module.exports = {
+    schema: transactionSchema,
+    model: mongoose.model('Transaction', transactionSchema)
+};

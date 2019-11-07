@@ -1,6 +1,6 @@
 // user.model.js
 const sharedAmountSchema = require('./amount.schema');
-const transactionSchema = require('./transaction.schema');
+const transactionSchema = require('./transaction.schema').schema;
 const mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({

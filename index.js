@@ -14,27 +14,27 @@ function isGreeting(text) {
 }
 
 function isAddUser(text) {
-  return (/add user/i.test(text));
+  return (/(add|new|create).*(user|account|participant|friend)/i.test(text));
 }
 
 function isAddTransaction(text) {
-  return (/add transaction/i.test(text));
+  return (/(add|new|create).*(transaction|payment)/i.test(text));
 }
 
 function isViewUsers(text) {
-  return (/view users/i.test(text));
+  return (/(view|see|who).*(users|accounts|participants|friends)/i.test(text));
 }
 
 function isViewTransactions(text) {
-  return (/view transactions/i.test(text));
+  return (/(view|see|who).*(transaction|payment)/i.test(text));
 }
 
 function isAddBudget(text) {
-  return (/add budget/i.test(text));
+  return (/(what's|what is).*(budget|money|details)/i.test(text));
 }
 
 function isRemoveUser(text) {
-  return (/remove user/i.test(text));
+  return (/(remove|delete).*(user|friend|participant|account)/i.test(text));
 }
 
 api.on(`message`, async (message) => {
@@ -67,7 +67,7 @@ api.on(`message`, async (message) => {
 
     } else if (message.reply_to_message && message.reply_to_message.from.is_bot) {
 
-      if (/cancel/i.test(message.text)) {
+      if (/(cancel|stop)/i.test(message.text)) {
 
         api.sendMessage({
           chat_id: message.chat.id,
@@ -90,39 +90,17 @@ api.on(`message`, async (message) => {
             text: strings.nameExists
           });
         }
-      } else if (message.reply_to_message.text === strings.askNameTransaction) {
-
-        // input
-
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: strings.askAmount,
-          reply_markup: JSON.stringify({
-            force_reply: true
-          })
-        });
-
-      } else if (message.reply_to_message.text === strings.askAmount) {
-
-        // input
-
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: strings.askDescription,
-          reply_markup: JSON.stringify({
-            force_reply: true
-          })
-        });
-
-      } else if (message.reply_to_message.text === strings.askDescription) {
-
-        // input
-
-        api.sendMessage({
-          chat_id: message.chat.id,
-          text: strings.transactionAdded,
-        });
-
+      } else if (message.reply_to_message.text === strings.askTransactionDetails) {
+        if(await commands.addTransactions(user, message))
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: strings.transactionAdded
+          });
+        else
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: strings.failureMessage
+          });
       }
     } else {
 
@@ -149,7 +127,7 @@ api.on(`message`, async (message) => {
         case isAddTransaction(message.text):
           api.sendMessage({
             chat_id: message.chat.id,
-            text: strings.askNameTransaction,
+            text: strings.askTransactionDetails,
             reply_markup: JSON.stringify({
               force_reply: true
             })
@@ -166,6 +144,11 @@ api.on(`message`, async (message) => {
           break;
 
         case isViewTransactions(message.text):
+
+          await api.sendMessage({
+            chat_id: message.chat.id,
+            text: 'Finding Transactions...'
+          });
           reply = await commands.viewTransactions(user);
 
           api.sendMessage({
@@ -205,7 +188,7 @@ api.on(`message`, async (message) => {
 
 getUser = (message) => {
   var user = {};
-  user.username = message.from.username;
+  user.username = message.from.username || message.from.id;
   user.name = `${message.from.first_name} ${message.from.last_name}`
   user.chat_id = message.from.id;
 

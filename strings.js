@@ -8,6 +8,7 @@ module.exports = {
     askDescription: `What was the transaction for?`,
     userAdded: `User added successfully.`,
     nameExists: `This name already exists, try a different one.`,
+    askTransactionDetails: `Enter the amount, friend's name, date, description (separated by commas).`,
     transactionAdded: `Your transaction has been added`,
     understandFailure: `I don't understand, try using a command.`,
     actionAborted: `Your action has been aborted`,

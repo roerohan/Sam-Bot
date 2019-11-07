@@ -1,7 +1,7 @@
 require('./models/db');
 
 const User = require('./models/user.model');
-const TransactionSchema = require('./models/transaction.schema');
+const Transaction = require('./models/transaction.schema').model;
 const strings = require('./strings');
 
 checkUserRegistered = async (user) => {
@@ -67,19 +67,14 @@ addUser = async (user, message) => {
     return info;
 }
 
-/**
- * Adds a transaction to an existing user
- * Params: userSchema user, object message
- * Returns model of transaction info that was updated to the user
-*/
 addTransactions = async (user, message) => {
 
-    let transactionInfo = new TransactionSchema();
-    transactionInfo.name = message.text.name;
-    transactionInfo.amount = message.text.amount;
-    transactionInfo.other = message.text.other;
-    transactionInfo.date = message.text.date;
-    transactionInfo.details = message.text.details;
+    const temp = message.text.split(',').map(string => string.trim());
+    let transactionInfo = new Transaction();
+    transactionInfo.amount = temp[0];
+    transactionInfo.other = temp[1];
+    transactionInfo.date = temp[2];
+    transactionInfo.details = temp[3];
 
     try {
         const doc = await User.find({
@@ -102,10 +97,9 @@ addTransactions = async (user, message) => {
     }
     catch (e) {
         console.log(`Error: ${e}`)
-        reply = strings.failureMessage;
-        return reply;
+        return false;
     }
-    return transactionInfo;
+    return true;
 }
 
 viewUsers = async (user) => {
@@ -120,7 +114,7 @@ viewUsers = async (user) => {
             return reply;
         }
 
-        var reply = (doc.others.length !== 0) ? `These are the users you have added: ${doc.others}` : `You have not added any users yet.`;
+        var reply = (doc.others.length !== 0) ? `These are the users you have added: \n${doc.others.join('\n')}` : `You have not added any users yet.`;
 
     } catch (e) {
         console.log(`Error: ${e}`);
@@ -141,8 +135,16 @@ viewTransactions = async (user) => {
             reply = `You must register yourself with the bot first, try: '/start'`
             return reply;
         }
-
-        var reply = (doc.transactions.length !== 0) ? `Your transactions are as follows: ${doc.transactions}`: `You have not made any transactions yet.`;
+        console.log(doc.transactions);
+        let toSend = '';
+        for (i in doc.transactions) {
+            let name = doc.transactions[i].other;
+            let description = doc.transactions[i].details;
+            let amount = doc.transactions[i].amount;
+            let date = doc.transactions[i].date;
+            toSend += `\n${name}\n${description}\n${amount}\n${date}\n`;
+        }
+        var reply = (doc.transactions.length !== 0) ? `Your transactions are as follows: \n${toSend}`: `You have not made any transactions yet.`;
 
     } catch (e) {
         console.log(`Error: ${e}`);
