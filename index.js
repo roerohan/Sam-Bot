@@ -37,6 +37,10 @@ function isRemoveUser(text) {
   return (/(remove|delete).*(user|friend|participant|account)/i.test(text));
 }
 
+function isCheckPayableAmount(text) {
+  return (/(((how much).*(owe))|credit|debit|calculate|(see.*due))|outstanding|debt|payable|amount/i.test(text));
+}
+
 api.on(`message`, async (message) => {
 
   console.log(message);
@@ -101,6 +105,19 @@ api.on(`message`, async (message) => {
             chat_id: message.chat.id,
             text: strings.failureMessage
           });
+      } else if (message.reply_to_message.text === strings.askNameCalculate) {
+        reply = await commands.calcPayable(user, message);
+        if (reply) {
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: reply,
+          });
+        } else {
+          api.sendMessage({
+            chat_id: message.chat.id,
+            text: strings.failureMessage
+          });
+        }
       }
     } else {
 
@@ -135,6 +152,10 @@ api.on(`message`, async (message) => {
           break;
 
         case isViewUsers(message.text):
+          await api.sendMessage({
+            chat_id: message.chat.id,
+            text: 'Finding Users...'
+          });
           reply = await commands.viewUsers(user);
 
           api.sendMessage({
@@ -149,12 +170,20 @@ api.on(`message`, async (message) => {
             chat_id: message.chat.id,
             text: 'Finding Transactions...'
           });
+
           reply = await commands.viewTransactions(user);
 
           api.sendMessage({
             chat_id: message.chat.id,
             text: reply,
           });
+          break;
+
+        case isCheckPayableAmount(message.text):
+            await api.sendMessage({
+              chat_id: message.chat.id,
+              text: strings.askNameCalculate,
+            });
           break;
 
         case isAddBudget(message.text):
@@ -188,8 +217,8 @@ api.on(`message`, async (message) => {
 
 getUser = (message) => {
   var user = {};
-  user.username = message.from.username || message.from.id;
-  user.name = `${message.from.first_name} ${message.from.last_name}`
+  user.username = message.from.username || message.from.id || '';
+  user.name = `${message.from.first_name} ${message.from.last_name || ''}`;
   user.chat_id = message.from.id;
 
   return user;

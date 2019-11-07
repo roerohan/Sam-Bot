@@ -118,6 +118,7 @@ viewUsers = async (user) => {
 
     } catch (e) {
         console.log(`Error: ${e}`);
+        return strings.serverError;
     }
 
     return reply;
@@ -148,16 +149,43 @@ viewTransactions = async (user) => {
 
     } catch (e) {
         console.log(`Error: ${e}`);
+        return strings.serverError;
     }
 
     return reply;
 
 }
 
+calcPayable = async (user, message) => {
+    try {
+        const doc = await User.findOne({
+            username: user.username
+        });
+
+        if (!doc) {
+            reply = `You must register yourself with the bot first, try: '/start'`
+            return reply;
+        }
+        const person = message.text;
+        let amount = 0;
+        for (i in doc.transactions) {
+            if (doc.transactions[i]['other'].toLowerCase() === person.toLowerCase()) {
+                amount += doc.transactions[i].amount;
+            }
+        }
+        var reply = (amount > 0) ? `${person} owes you Rs. ${amount}.`: `You owe ${person} an amount of Rs. ${amount}.`
+    } catch (e) {
+        console.log(`Error: ${e}`);
+        return strings.serverError;
+    }
+    return reply;
+}
+
 module.exports = {
-    checkUserRegistered: checkUserRegistered,
-    addUser: addUser,
-    addTransactions: addTransactions,
-    viewUsers: viewUsers,
-    viewTransactions: viewTransactions,
+    checkUserRegistered,
+    addUser,
+    addTransactions,
+    viewUsers,
+    viewTransactions,
+    calcPayable,
 }
