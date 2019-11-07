@@ -41,7 +41,7 @@ function isCheckPayableAmount(text) {
   return (/(((how much).*(owe))|credit|debit|calculate|(see.*due))|outstanding|debt|payable|amount/i.test(text));
 }
 
-api.on(`message`, async (message) => {
+api.on('message', async (message) => {
 
   console.log(message);
 
@@ -94,7 +94,9 @@ api.on(`message`, async (message) => {
             text: strings.nameExists
           });
         }
+
       } else if (message.reply_to_message.text === strings.askTransactionDetails) {
+
         if(await commands.addTransactions(user, message))
           api.sendMessage({
             chat_id: message.chat.id,
@@ -105,8 +107,10 @@ api.on(`message`, async (message) => {
             chat_id: message.chat.id,
             text: strings.failureMessage
           });
+
       } else if (message.reply_to_message.text === strings.askNameCalculate) {
-        reply = await commands.calcPayable(user, message);
+
+        let reply = await commands.calcPayable(user, message);
         if (reply) {
           api.sendMessage({
             chat_id: message.chat.id,
@@ -118,6 +122,7 @@ api.on(`message`, async (message) => {
             text: strings.failureMessage
           });
         }
+
       }
     } else {
 
@@ -208,7 +213,7 @@ api.on(`message`, async (message) => {
       }
     }
   } catch (e) {
-    console.log(`Error: ${e}`);
+    console.log(`Error in index.js, Line 216: ${e}`);
   }
 
 });

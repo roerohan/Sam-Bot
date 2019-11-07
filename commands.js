@@ -29,7 +29,7 @@ checkUserRegistered = async (user) => {
         return true;
 
     } catch (e) {
-        console.log(`Error: ${e}`)
+        console.log(`Error in checkUserRegistered: ${e}`);
     }
 
 }
@@ -62,7 +62,8 @@ addUser = async (user, message) => {
         });
     }
     catch (e) {
-        console.log(`Error: ${e}`)
+        console.log(`Error in addUser: ${e}`)
+        return strings.serverError;
     }
     return info;
 }
@@ -96,7 +97,7 @@ addTransactions = async (user, message) => {
 
     }
     catch (e) {
-        console.log(`Error: ${e}`)
+        console.log(`Error in addTransactions: ${e}`)
         return false;
     }
     return true;
@@ -117,7 +118,7 @@ viewUsers = async (user) => {
         var reply = (doc.others.length !== 0) ? `These are the users you have added: \n${doc.others.join('\n')}` : `You have not added any users yet.`;
 
     } catch (e) {
-        console.log(`Error: ${e}`);
+        console.log(`Error in viewUsers: ${e}`);
         return strings.serverError;
     }
 
@@ -148,7 +149,7 @@ viewTransactions = async (user) => {
         var reply = (doc.transactions.length !== 0) ? `Your transactions are as follows: \n${toSend}`: `You have not made any transactions yet.`;
 
     } catch (e) {
-        console.log(`Error: ${e}`);
+        console.log(`Error in viewTransactions: ${e}`);
         return strings.serverError;
     }
 
@@ -175,7 +176,7 @@ calcPayable = async (user, message) => {
         }
         var reply = (amount > 0) ? `${person} owes you Rs. ${amount}.`: `You owe ${person} an amount of Rs. ${amount}.`
     } catch (e) {
-        console.log(`Error: ${e}`);
+        console.log(`Error in calcPayable: ${e}`);
         return strings.serverError;
     }
     return reply;
