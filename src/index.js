@@ -1,6 +1,6 @@
-const api = require(`./api`);
-const commands = require(`./commands`);
-const strings = require(`./strings`);
+const api = require('./api');
+const commands = require('./commands');
+const strings = require('./strings');
 
 // Add user
 // Add transaction
@@ -41,76 +41,72 @@ function isCheckPayableAmount(text) {
   return (/(((how much).*(owe))|credit|debit|calculate|(see.*due))|outstanding|debt|payable|amount/i.test(text));
 }
 
-api.on('message', async (message) => {
+const getUser = (message) => {
+  const user = {};
+  user.username = message.from.username || message.from.id || '';
+  user.name = `${message.from.first_name} ${message.from.last_name || ''}`;
+  user.chat_id = message.from.id;
 
+  return user;
+};
+
+api.on('message', async (message) => {
   console.log(message);
 
   try {
-
-    var user = getUser(message);
+    const user = getUser(message);
 
     if (message.from.is_bot) {
       return;
     }
 
-    if (message.text === `/start`) {
-
+    if (message.text === '/start') {
       if (await commands.checkUserRegistered(user)) {
-
         api.sendMessage({
           chat_id: message.chat.id,
           text: strings.welcomeBack,
           reply_markup: JSON.stringify({
             keyboard: strings.commandList,
             one_time_keyboard: true,
-            resize_keyboard: true
-          })
-        })
-
+            resize_keyboard: true,
+          }),
+        });
       }
-
     } else if (message.reply_to_message && message.reply_to_message.from.is_bot) {
-
       if (/(cancel|stop)/i.test(message.text)) {
-
         api.sendMessage({
           chat_id: message.chat.id,
           text: strings.actionAborted,
         });
         return;
-
       }
 
       if (message.reply_to_message.text === strings.askName) {
-
         if (await commands.addUser(user, message)) {
           api.sendMessage({
             chat_id: message.chat.id,
-            text: strings.userAdded
+            text: strings.userAdded,
           });
         } else {
           api.sendMessage({
             chat_id: message.chat.id,
-            text: strings.nameExists
+            text: strings.nameExists,
           });
         }
-
       } else if (message.reply_to_message.text === strings.askTransactionDetails) {
-
-        if(await commands.addTransactions(user, message))
+        if (await commands.addTransactions(user, message)) {
           api.sendMessage({
             chat_id: message.chat.id,
-            text: strings.transactionAdded
+            text: strings.transactionAdded,
           });
-        else
+        } else {
           api.sendMessage({
             chat_id: message.chat.id,
-            text: strings.failureMessage
+            text: strings.failureMessage,
           });
-
+        }
       } else if (message.reply_to_message.text === strings.askNameCalculate) {
-
-        let reply = await commands.calcPayable(user, message);
+        const reply = await commands.calcPayable(user, message);
         if (reply) {
           api.sendMessage({
             chat_id: message.chat.id,
@@ -119,14 +115,12 @@ api.on('message', async (message) => {
         } else {
           api.sendMessage({
             chat_id: message.chat.id,
-            text: strings.failureMessage
+            text: strings.failureMessage,
           });
         }
-
       }
     } else {
-
-      let reply = ``;
+      let reply = '';
 
       switch (true) {
         case isGreeting(message.text):
@@ -141,8 +135,8 @@ api.on('message', async (message) => {
             chat_id: message.chat.id,
             text: strings.askName,
             reply_markup: JSON.stringify({
-              force_reply: true
-            })
+              force_reply: true,
+            }),
           });
           break;
 
@@ -151,15 +145,15 @@ api.on('message', async (message) => {
             chat_id: message.chat.id,
             text: strings.askTransactionDetails,
             reply_markup: JSON.stringify({
-              force_reply: true
-            })
+              force_reply: true,
+            }),
           });
           break;
 
         case isViewUsers(message.text):
           await api.sendMessage({
             chat_id: message.chat.id,
-            text: 'Finding Users...'
+            text: 'Finding Users...',
           });
           reply = await commands.viewUsers(user);
 
@@ -173,7 +167,7 @@ api.on('message', async (message) => {
 
           await api.sendMessage({
             chat_id: message.chat.id,
-            text: 'Finding Transactions...'
+            text: 'Finding Transactions...',
           });
 
           reply = await commands.viewTransactions(user);
@@ -185,10 +179,10 @@ api.on('message', async (message) => {
           break;
 
         case isCheckPayableAmount(message.text):
-            await api.sendMessage({
-              chat_id: message.chat.id,
-              text: strings.askNameCalculate,
-            });
+          await api.sendMessage({
+            chat_id: message.chat.id,
+            text: strings.askNameCalculate,
+          });
           break;
 
         case isAddBudget(message.text):
@@ -206,8 +200,8 @@ api.on('message', async (message) => {
             reply_markup: JSON.stringify({
               keyboard: strings.commandList,
               one_time_keyboard: true,
-              resize_keyboard: true
-            })
+              resize_keyboard: true,
+            }),
           });
           break;
       }
@@ -215,16 +209,4 @@ api.on('message', async (message) => {
   } catch (e) {
     console.log(`Error in index.js, Line 216: ${e}`);
   }
-
 });
-
-
-
-getUser = (message) => {
-  var user = {};
-  user.username = message.from.username || message.from.id || '';
-  user.name = `${message.from.first_name} ${message.from.last_name || ''}`;
-  user.chat_id = message.from.id;
-
-  return user;
-}
