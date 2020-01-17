@@ -9,7 +9,7 @@ module.exports = {
   userAdded: 'User added successfully.',
   nameExists: 'This name already exists, try a different one.',
   askTransactionDetails: 'Enter the amount, friend\'s name, date, description (separated by commas, enter a +ve amount if you paid, otherwise enter a -ve amount).',
-  askNameCalculate: 'Who do you want to check your',
+  askNameCalculate: 'Who do you want to check your payables with?',
   transactionAdded: 'Your transaction has been added',
   understandFailure: 'I don\'t understand, try using a command.',
   actionAborted: 'Your action has been aborted',

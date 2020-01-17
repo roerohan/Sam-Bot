@@ -22,11 +22,11 @@ function isAddTransaction(text) {
 }
 
 function isViewUsers(text) {
-  return (/(view|see|who).*(users|accounts|participants|friends)/i.test(text));
+  return (/(view|see|show|who).*(users|accounts|participants|friends)/i.test(text));
 }
 
 function isViewTransactions(text) {
-  return (/(view|see|who).*(transaction|payment)/i.test(text));
+  return (/(view|see|show|who).*(transaction|payment)/i.test(text));
 }
 
 function isAddBudget(text) {
@@ -38,7 +38,7 @@ function isRemoveUser(text) {
 }
 
 function isCheckPayableAmount(text) {
-  return (/(((how much).*(owe))|credit|debit|calculate|(see.*due))|outstanding|debt|payable|amount/i.test(text));
+  return (/(((how much).*(owe))|credit|debit|calculate|(see|show.*due))|outstanding|debt|payable|amount/i.test(text));
 }
 
 const getUser = (message) => {
@@ -182,6 +182,9 @@ api.on('message', async (message) => {
           await api.sendMessage({
             chat_id: message.chat.id,
             text: strings.askNameCalculate,
+            reply_markup: JSON.stringify({
+              force_reply: true,
+            }),
           });
           break;
 
